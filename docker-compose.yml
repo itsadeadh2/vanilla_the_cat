@@ -1,0 +1,15 @@
+version: "3"
+
+services:   
+  mongo:
+    container_name: mongo 
+    image: mongo
+    ports:
+      - 27017:27017
+  api:
+    container_name: api
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - 3000:3000
