@@ -8,20 +8,38 @@ const Telegraf = require('telegraf/telegraf');
 const bot = new Telegraf(config.get('token'));
 const {User} = require('./models/user.model');
 
-bot.on('message', async (obj) => {
+bot.use((ctx, next) => {
+    const userId = ctx.message.from.id;
+    let userFromDb = await User.findOne({chatId: user.chatId});
+    let user = {
+        nome: // cansei, fica pra amanha
+    }
+})
+
+bot.on('text', async (obj) => {
     obj = obj.update.message;
     let user = {
         nome: `${obj.from.first_name} + ${obj.from.last_name}`,
         chatId: obj.chat.id                
     }
     user = new User(user);
-    let userFromDb = await User.findOne({chatId: user.chatId});
     if (userFromDb) {
         console.log('user already exists!');
         return;
     }
     await user.save();
     console.log('user saved!');
+})
+
+let state = {};
+
+bot.command('lesgo', ctx => {
+    const userId = ctx.message.from.id;
+
+    if(!state[userId]) state[userId] = { id: userId};
+
+    state[userId].command = 'lesgo';
+    return ctx.replyWithMarkdown(`Lesgo! Para começar, me informe o seu usuario do gitlab`);
 })
 
 require('./startup/logging')();
