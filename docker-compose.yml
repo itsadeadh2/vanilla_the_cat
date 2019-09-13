@@ -13,3 +13,5 @@ services:
       context: .
     ports:
       - 3000:3000
+    volumes:
+      - ${PWD}:/app
