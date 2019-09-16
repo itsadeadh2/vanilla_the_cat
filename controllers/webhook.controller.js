@@ -1,12 +1,9 @@
-const Telegraf = require('telegraf');
 const Telegram = require('telegraf/telegram');
 const config = require('config');
 const telegram = new Telegram(config.get('token'));
-const bot = new Telegraf(config.get('token'));
 const winston = require('winston');
 const { User } = require('../models/user.model');
 exports.post = async (req, res, next) => {
-    // winston.info(req.body);
     if(req.body.object_kind != 'pipeline')
         return res.status(400).send({message: 'sorry, vanilla cant handle these requests :c'})
     let projId = req.body.project.id;
