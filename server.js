@@ -10,7 +10,7 @@ require('./startup/logging')();
 require('./startup/database')();
 require('./startup/routes')(app);
 require('./startup/telegram')(bot);
-require('./startup/commands')(bot);
+require('./startup/scenes')(bot);
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => winston.info(`Api rodando na porta ${port}`));
