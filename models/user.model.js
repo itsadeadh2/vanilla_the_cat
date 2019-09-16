@@ -13,9 +13,8 @@ const userSchema = new mongoose.Schema({
     projectId: {
         type: String
     },
-    state: {
-        type: String,
-        enum: ['neutral', 'awaitingProjectId',]
+    token: {
+        type: String
     }
 })
 
