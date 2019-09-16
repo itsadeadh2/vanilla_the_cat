@@ -2,8 +2,12 @@ const winston = require('winston');
 const { User } = require('../../models/user.model');
 
 module.exports = async function (ctx, next) {
-    const chatId = ctx.update.message.from.id;
-    winston.info({ ctx: ctx });
+    let chatId; 
+    if (ctx.update.message){
+        chatId = ctx.update.message.from.id;
+    } else {
+        chatId = ctx.update.callback_query.from.id;
+    }
     let userFromDb = await User.findOne({ chatId: chatId });
     if (userFromDb) {
         console.log('user already registered!');
