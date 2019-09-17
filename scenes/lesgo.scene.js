@@ -10,7 +10,7 @@ lesgoScene.enter(async (ctx) => {
 })
 lesgoScene.on('text', async (ctx) => {
     const userId = ctx.message.from.id;
-    let user = await User.findOne({chatId: userId});
+    let user = await User.findById(userId);
     user.token = ctx.message.text;
     await user.save();
     return ctx.reply(

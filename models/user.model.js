@@ -5,13 +5,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    chatId: {
+    _id: {
         type: String,
         required: true,
         unique: true
     },
     projects: [
-        {id: String, nome: String}
+        {_id: String, nome: String}
     ],
     token: {
         type: String
