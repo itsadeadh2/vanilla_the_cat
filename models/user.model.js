@@ -10,9 +10,9 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    projectId: {
-        type: String
-    },
+    projects: [
+        {id: String, nome: String}
+    ],
     token: {
         type: String
     }
