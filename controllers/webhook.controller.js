@@ -3,14 +3,25 @@ const config = require('config');
 const telegram = new Telegram(config.get('token'));
 const winston = require('winston');
 const { User } = require('../models/user.model');
-exports.post = async (req, res, next) => {
-    if(req.body.object_kind != 'pipeline')
-        return res.status(400).send({message: 'sorry, vanilla cant handle these requests :c'})
-    let projId = req.body.project.id;
-    let users = await User.find({ projectId: projId });
-    users.forEach(user => {
-        telegram.sendMessage(user.chatId, `Hey! Your project ${req.body.project.name} is currently: ${req.body.object_attributes.status} a ${req.body.object_kind} of the commit ${req.body.commit.message} (${req.body.commit.id})`);
-    });
-    winston.info(req.body);
-    res.send(req.body);
+
+exports.post = async (req, res, next) => {    
+    if(req.body.object_kind == 'pipeline'){
+        let projId = req.body.project.id;
+        let users = await User.find({ projectId: projId });
+        users.forEach(user => {
+            telegram.sendMessage(user.chatId, `Hey! Your project ${req.body.project.name} is currently: ${req.body.object_attributes.status} a ${req.body.object_kind} of the commit ${req.body.commit.message} (${req.body.commit.id})`);
+        });
+        winston.info(req.body);
+        res.send(req.body);
+    } else if (req.body.object_kind == 'push'){
+        let projid = req.body.project.id;
+        let users = await User.find({ projectId: projid});
+        commit = req.body.commits.find(commit => {
+            return commit.id === req.body.checkout_sha;
+        });
+        users.forEach(user => {
+            telegram.sendMessage(user.chatId,
+                `Seu projeto *${req.body.project.name}* acabou de receber um _push_ do ususario *${req.body.user_name}!*  Para mais detalhes [clique aqui](${commit.url})`, { parse_mode: 'Markdown' });
+        })        
+    }
 }
