@@ -9,7 +9,7 @@ exports.post = async (req, res, next) => {
         let projId = req.body.project.id;
         let users = await User.find({ 'projects._id': projId });
         users.forEach(user => {
-            telegram.sendMessage(user._id, `Hey! Your project ${req.body.project.name} is currently: ${req.body.object_attributes.status} a ${req.body.object_kind} of the commit ${req.body.commit.message} (${req.body.commit.id})`);
+            telegram.sendMessage(user._id, 'Hey! O seu projeto '+ req.body.project.name + ' está executando uma ' + req.body.object_kind + ' do commit ```' + req.body.commit.message + '``` no estado: ```'  + req.body.object_attributes.status + '```', { parse_mode: 'Markdown' });
         });
         winston.info(req.body);
         res.send(req.body);
