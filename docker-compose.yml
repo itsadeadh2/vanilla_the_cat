@@ -11,7 +11,10 @@ services:
     build:
       dockerfile: Dockerfile
       context: .
+    environment:
+      - TOKEN=token
     ports:
+      
       - 3000:3000
     volumes:
       - ${PWD}:/app

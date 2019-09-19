@@ -3,7 +3,7 @@ const express = require('express');
 const winston = require('winston');
 const Telegraf = require('telegraf/telegraf');
 
-const bot = new Telegraf(config.get('token'));
+const bot = new Telegraf(process.env.TOKEN);
 const app = express();
 
 require('./startup/logging')();

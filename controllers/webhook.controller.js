@@ -1,6 +1,6 @@
 const Telegram = require('telegraf/telegram');
 const config = require('config');
-const telegram = new Telegram(config.get('token'));
+const telegram = new Telegram(process.env.TOKEN);
 const winston = require('winston');
 const { User } = require('../models/user.model');
 
