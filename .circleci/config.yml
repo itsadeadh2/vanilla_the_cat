@@ -10,7 +10,7 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
-            ssh $SSH_USER@$SSH_HOST "touch /root/itworked.test>"
+            ssh $SSH_USER@$SSH_HOST "touch /root/itworked.test"
 
 workflows:
   version: 2
