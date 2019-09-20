@@ -10,9 +10,10 @@ jobs:
       - run:
           name: Deploy Over SSH
           command: |
-            ssh $SSH_USER@$SSH_HOST "touch /root/itworked.test"
+            ssh $SSH_USER@$SSH_HOST <<'ENDSSH'
             cd /telegram
             git pull origin master
+            ENDSSH
 
 workflows:
   version: 2
