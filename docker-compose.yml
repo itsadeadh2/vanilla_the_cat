@@ -16,7 +16,8 @@ services:
     environment:
       - "TOKEN=${TELEGRAM_BOT_TOKEN}"
     ports:
-      
       - 3000:3000
     volumes:
       - ${PWD}:/app
+    depends_on:
+      - mongo
