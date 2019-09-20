@@ -24,4 +24,4 @@ workflows:
       - deploy:
           filters:
             branches:
-              only: continuousdeploy
+              only: master
