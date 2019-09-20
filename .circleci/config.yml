@@ -14,7 +14,7 @@ jobs:
             cd /telegram
             git pull origin master
             rm package-lock.json
-            docker-compose up --build --force-recreate                                    
+            docker-compose up -d --build --force-recreate                                    
             ENDSSH
 
 workflows:
