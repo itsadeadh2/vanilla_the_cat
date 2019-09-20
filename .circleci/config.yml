@@ -13,6 +13,8 @@ jobs:
             ssh $SSH_USER@$SSH_HOST <<'ENDSSH'
             cd /telegram
             git pull origin master
+            rm package-lock.json
+            docker-compose up --build --force-recreate                                    
             ENDSSH
 
 workflows:
