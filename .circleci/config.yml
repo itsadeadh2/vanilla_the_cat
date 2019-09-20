@@ -11,6 +11,8 @@ jobs:
           name: Deploy Over SSH
           command: |
             ssh $SSH_USER@$SSH_HOST "touch /root/itworked.test"
+            cd /telegram
+            git pull origin master
 
 workflows:
   version: 2
