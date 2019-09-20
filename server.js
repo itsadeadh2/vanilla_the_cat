@@ -6,8 +6,6 @@ const Telegraf = require('telegraf/telegraf');
 const bot = new Telegraf(process.env.TOKEN);
 const app = express();
 
-// teste github
-
 require('./startup/logging')();
 require('./startup/database')();
 require('./startup/routes')(app);
