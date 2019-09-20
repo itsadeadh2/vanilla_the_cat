@@ -21,7 +21,14 @@ exports.post = async (req, res, next) => {
         });
         users.forEach(user => {
             telegram.sendMessage(user._id,
-                `Seu projeto *${req.body.project.name}* acabou de receber um _push_ do ususario *${req.body.user_name}!*  Para mais detalhes [clique aqui](${commit.url})`, { parse_mode: 'Markdown' });
-        })        
+                `Seu projeto <b>${req.body.project.name}</b> acabou de receber um <i>push</i> do ususario <b>${req.body.user_name}!</b>  Para mais detalhes <a href="${commit.url}">clique aqui</a>)`, { parse_mode: 'HTML' });
+        });        
+    } else if (req.body.object_kind == 'merge_request') {
+        let projId = req.body.project.id;
+        let users = await User.find({ 'projects._id': projId });
+        users.forEach(user => {
+            telegram.sendMessage(user._id,
+                `Hey! O projeto <b>${req.body.project.name}</b> acabou de receber um <i>merge request</i> do usuário <b>${ req.body.user.name }!</b> Para mais detalhes <a href="${req.body.object_attributes.url}">clique aqui</a>`, { parse_mode: 'HTML' });        
+        });
     }
 }
