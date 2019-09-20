@@ -1,0 +1,19 @@
+version: 2
+jobs:
+  deploy:
+    machine:
+      enabled: true
+    steps:
+      - run:
+          name: Deploy Over SSH
+          command: |
+            ssh $SSH_USER@$SSH_HOST "touch /root/itworked.test>"
+
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only: continuousdeploy
