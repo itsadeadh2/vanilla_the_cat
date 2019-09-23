@@ -14,8 +14,10 @@ lesgoScene.enter(async (ctx) => {
         Markup.inlineKeyboard([Markup.callbackButton('Vamos lá!', 'yes'), Markup.callbackButton('Talvez mais tarde...', 'no')]).extra()
     )
     let url = await oauthService.generateUserUrl(user._id);
-    return ctx.replyWithMarkdown(`**Lesgo** 😺
+    ctx.reply(`**Lesgo** 😺
     Utilize o seguinte link para se autenticar ao GitLab: ${url}`);
+    ctx.reply('Após autorizar o acesso volte aqui e use /lesgo novamente c:');
+    return ctx.scene.leave();
 })
 
 lesgoScene.command('cancel', (ctx) => {
