@@ -1,4 +1,4 @@
-const telegram = require('./telegram.client');
+const telegram = require('../clients/telegram.client');
 const { User } = require('../models/user.model');
 
 const webhookService = {
