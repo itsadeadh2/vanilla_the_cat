@@ -1,0 +1,27 @@
+version: 2
+jobs:
+  deploy:
+    machine:
+      enabled: true
+    steps:
+      - add_ssh_keys:
+          fingerprints:
+            - $FINGERPRINT
+      - run:
+          name: Deploy Over SSH
+          command: |
+            ssh $SSH_USER@$SSH_HOST <<'ENDSSH'
+            cd /telegram
+            git pull origin master
+            rm package-lock.json
+            docker-compose up -d --build --force-recreate                                    
+            ENDSSH
+
+workflows:
+  version: 2
+  deploy:
+    jobs:
+      - deploy:
+          filters:
+            branches:
+              only: master

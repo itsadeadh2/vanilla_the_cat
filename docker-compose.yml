@@ -6,15 +6,18 @@ services:
     image: mongo
     ports:
       - 27017:27017
+    volumes:
+      - ${PWD}/datadir:/data/db
   api:
     container_name: api
     build:
       dockerfile: Dockerfile
       context: .
     environment:
-      - TOKEN=token
+      - "TOKEN=${TELEGRAM_BOT_TOKEN}"
     ports:
-      
       - 3000:3000
     volumes:
       - ${PWD}:/app
+    depends_on:
+      - mongo
