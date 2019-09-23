@@ -20,3 +20,5 @@ const oauthService = {
         return true;
     }
 }
+
+module.exports = oauthService;
