@@ -1,6 +1,7 @@
 const { User } = require('../models/user.model');
 const Scene = require('telegraf/scenes/base')
 const { Markup } = require('telegraf');
+const oauthService = require('../services/oauth.service');
 
 
 const lesgoScene = new Scene('lesgo');
