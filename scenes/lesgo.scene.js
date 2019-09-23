@@ -13,8 +13,9 @@ lesgoScene.enter(async (ctx) => {
         `Gostaria de cadastrar um projeto agora?`,
         Markup.inlineKeyboard([Markup.callbackButton('Vamos lá!', 'yes'), Markup.callbackButton('Talvez mais tarde...', 'no')]).extra()
     )
+    let url = await oauthService.generateUserUrl(user._id);
     return ctx.replyWithMarkdown(`**Lesgo** 😺
-    Para começar, me informe um **token de apenas leitura** do gitlab para que eu posa visualizar as informações de todos os seus projetos. Caso não saiba como fazer isso, [aqui esta uma pagina que fala um pouco sobre os tokens.](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)`);
+    Utilize o seguinte link para se autenticar ao GitLab: ${url}`);
 })
 
 lesgoScene.command('cancel', (ctx) => {
