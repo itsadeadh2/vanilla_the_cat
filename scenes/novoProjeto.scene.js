@@ -12,6 +12,8 @@ novoProjetoScene.enter(async (ctx) => {
     return ctx.replyWithMarkdown(`Vamos lá! Para começar o cadastro do seu projeto, primeiramente me informe o ID do mesmo.`);
 })
 
+
+//TODO: adicionar comando para cancelar o processo de adicao de novo projeto
 novoProjetoScene.on('text', async (ctx) => {
     projeto._id = ctx.message.text;
     let user = await User.findById(ctx.message.from.id);
@@ -19,12 +21,17 @@ novoProjetoScene.on('text', async (ctx) => {
         return proj._id == projeto._id;
     })
     if (projetoFromDb) return ctx.reply('O projeto já está cadastrado! Por favor, tente novamente.');
-    let res = await axios.get('https://gitlab.com/api/v4/projects/'+projeto._id, { headers: { 'Private-Token': user.token } });
-    projeto.nome = res.data.name;
-    return ctx.reply(
-        `Apenas confirmando, o projeto em questao é o ${res.data.name}?`,
-        Markup.inlineKeyboard([Markup.callbackButton('Sim, é este projeto', 'yes'), Markup.callbackButton('Não, não é este', 'no')]).extra()
-    )
+    try {
+        let res = await axios.get('https://gitlab.com/api/v4/projects/'+projeto._id, { headers: { 'Authorization': 'Bearer ' + user.token } });
+        projeto.nome = res.data.name;
+        return ctx.reply(
+            `Apenas confirmando, o projeto em questao é o ${res.data.name}?`,
+            Markup.inlineKeyboard([Markup.callbackButton('Sim, é este projeto', 'yes'), Markup.callbackButton('Não, não é este', 'no')]).extra()
+        )
+
+    } catch(error) {
+        console.log(error);
+    }
 })
 
 novoProjetoScene.on('callback_query', async (ctx) => {
@@ -46,7 +53,7 @@ const setwebHook = async function(projectId, token) {
     const hookUrl = 'http://51.79.87.65:3000/api/gitlabIntegration';
     let alreadyRegistered = false;
 
-    let res = await axios.get(`https://gitlab.com/api/v4/projects/${projectId}/hooks`, { headers: {'Private-Token': token} });
+    let res = await axios.get(`https://gitlab.com/api/v4/projects/${projectId}/hooks`, { headers: { 'Authorization': 'Bearer ' + token } });
     for (let index = 0; index < res.data.length; index++) {
        if(res.data[index] === hookUrl) {
             alreadyRegistered = true;
@@ -70,7 +77,7 @@ const setwebHook = async function(projectId, token) {
             "wiki_page_events": true,
             "enable_ssl_verification": false,
             "confidential_issues_events": true
-        }, { headers: {'Private-Token': token} })
+        }, { headers: {'Authorization': 'Bearer ' + token} })
     }
 }
 
