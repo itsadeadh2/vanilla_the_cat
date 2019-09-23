@@ -36,9 +36,42 @@ novoProjetoScene.on('callback_query', async (ctx) => {
     if(answer=='no') return ctx.replyWithMarkdown('Okay! Envie o Id do projeto que deseja cadastrar.');
     let user = await User.findById(userId);
     user.projects.push(projeto);
-    await user.save();
+    setwebHook(projeto._id, user.token);
+    await user.save();    
     ctx.reply('Projeto cadastrado com sucesso!');
     ctx.scene.leave();
 })
+
+const setwebHook = async function(projectId, token) {
+    const hookUrl = 'http://51.79.87.65:3000/api/gitlabIntegration';
+    let alreadyRegistered = false;
+
+    let res = await axios.get(`https://gitlab.com/api/v4/projects/${projectId}/hooks`, { headers: {'Private-Token': token} });
+    for (let index = 0; index < res.data.length; index++) {
+       if(res.data[index] === hookUrl) {
+            alreadyRegistered = true;
+            break;
+       }
+        
+    }
+
+
+    if (!alreadyRegistered) {
+        let response = await axios.post(`https://gitlab.com/api/v4/projects/${projectId}/hooks`,{
+            "id": projectId,
+            "url": hookUrl,
+            "push_events": true,
+            "issues_events": true,
+            "merge_requests_events": true,
+            "tag_push_events": true,
+            "note_events": true,
+            "job_events": true,
+            "pipeline_events": true,
+            "wiki_page_events": true,
+            "enable_ssl_verification": false,
+            "confidential_issues_events": true
+        }, { headers: {'Private-Token': token} })
+    }
+}
 
 module.exports = novoProjetoScene;
