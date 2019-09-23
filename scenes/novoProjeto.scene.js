@@ -78,6 +78,7 @@ const setwebHook = async function(projectId, token) {
             "enable_ssl_verification": false,
             "confidential_issues_events": true
         }, { headers: {'Authorization': 'Bearer ' + token} })
+
     }
 }
 
