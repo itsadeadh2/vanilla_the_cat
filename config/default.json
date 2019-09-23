@@ -1,3 +1,4 @@
 {
-    "db": "mongodb://mongo/vanillaDb"
+    "db": "mongodb://mongo/vanillaDb",
+    "jwtPrivateKey": "jwtPrivateKey"
 }
