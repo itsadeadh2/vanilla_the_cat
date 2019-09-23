@@ -8,12 +8,15 @@ const novoProjetoScene = new Scene('novoprojeto');
 
 let projeto = {};
 
+novoProjetoScene.command('cancel', (ctx) => {
+    ctx.reply('Okay, se precisar estou aqui!');
+    ctx.scene.leave();
+})
+
 novoProjetoScene.enter(async (ctx) => {
     return ctx.replyWithMarkdown(`Vamos lá! Para começar o cadastro do seu projeto, primeiramente me informe o ID do mesmo.`);
 })
 
-
-//TODO: adicionar comando para cancelar o processo de adicao de novo projeto
 novoProjetoScene.on('text', async (ctx) => {
     projeto._id = ctx.message.text;
     let user = await User.findById(ctx.message.from.id);

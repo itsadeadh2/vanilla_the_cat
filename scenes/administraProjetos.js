@@ -8,6 +8,11 @@ const administraProjScene = new Scene('administraProj');
 
 let projectId;
 
+administraProjScene.command('cancel', (ctx) => {
+    ctx.reply('Okay, se precisar estou aqui!');
+    ctx.scene.leave();
+})
+
 administraProjScene.enter(async (ctx) => {
     let userId = ctx.update.message.from.id;
     let user = await User.findById(userId);
