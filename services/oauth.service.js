@@ -5,8 +5,8 @@ const axios = require('axios');
 const qs = require('qs');
 
 const oauthService = {
-    client_secret: '0858924bfaae79de9b62eb88bba991e5b9fa62c2ddeb28aae62dac80600a542a',
-    client_id: 'b902d564260b4c23e661dd5392d555f1118e608fd322e6937541c7fc50b86730',
+    client_secret: process.env.CLIENT_SECRET,
+    client_id: process.env.CLIENT_ID,
     redirectUri: 'http://45.79.228.17:3000/api/oauth',
     baseUrl: 'https://gitlab.com/oauth',
     
