@@ -2,11 +2,12 @@ const { User } = require('../models/user.model');
 const jwt  = require('jsonwebtoken');
 const config = require('config');
 const axios = require('axios');
+const qs = require('qs');
 
 const oauthService = {
-    client_secret: 'meusecret',
-    client_id: 'minhaid',
-    redirectUri: encodeURIComponent('http://45.79.228.17:3000/api/oauth'),
+    client_secret: '0858924bfaae79de9b62eb88bba991e5b9fa62c2ddeb28aae62dac80600a542a',
+    client_id: 'b902d564260b4c23e661dd5392d555f1118e608fd322e6937541c7fc50b86730',
+    redirectUri: 'http://45.79.228.17:3000/api/oauth',
     baseUrl: 'https://gitlab.com/oauth',
     
     generateStateHash(user) {
@@ -16,7 +17,7 @@ const oauthService = {
     async generateUserUrl(userId) {        
         let user = await User.findById(userId);
         let token = this.generateStateHash(user);
-        let url = `${this.baseUrl}/authorize?client_id=${this.client_id}&redirect_uri=${this.redirectUri}&response_type=code&state=${token}&scope=api`
+        let url = `${this.baseUrl}/authorize?client_id=${this.client_id}&redirect_uri=${encodeURIComponent(this.redirectUri)}&response_type=code&state=${token}&scope=api+read_repository+read_user+write_repository+read_registry+sudo`
         return url;
     },
 
@@ -24,18 +25,33 @@ const oauthService = {
         const decoded = jwt.verify(token, config.get('jwtPrivateKey'));
         let user = await User.findById(decoded._id);
         if (!user) return false;
-        return user;
+        return user._id;
     },    
 
     async getUserToken(code) {
-        let url = `https://gitlab.com/oauth/token/`;
-        let res = await axios.post(url, {params: {
-            client_id: this.client_id,
-            client_secret: this.client_secret,
-            code: code,
-            grant_type: 'authorization_code',
-            redirect_uri: this.redirectUri
-        }});
+        try {
+            let url = `https://gitlab.com/oauth/token`;
+            let res = await axios.post(url, null, { params: {
+                client_id: this.client_id,
+                client_secret: this.client_secret,
+                code,
+                grant_type: 'authorization_code',
+                redirect_uri: this.redirectUri
+            }});
+            return res.data;
+        } catch (err) {
+            console.log(err);
+        }
+    },
+
+    async process(token, code) {
+        let userId = await this.validateToken(token);
+        if(!userId) return false;
+        let { access_token } = await this.getUserToken(code);
+        let user = await User.findById(userId);
+        user.token = access_token;
+        await user.save();
+        return user;
     }
 }
 
