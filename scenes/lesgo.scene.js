@@ -6,11 +6,18 @@ const { Markup } = require('telegraf');
 const lesgoScene = new Scene('lesgo');
 
 lesgoScene.enter(async (ctx) => {
+    const userId = ctx.from.id;
+    let user = await User.findById(userId);
+    if(user.token) return ctx.reply(
+        `Gostaria de cadastrar um projeto agora?`,
+        Markup.inlineKeyboard([Markup.callbackButton('Vamos lá!', 'yes'), Markup.callbackButton('Talvez mais tarde...', 'no')]).extra()
+    )
     return ctx.replyWithMarkdown(`**Lesgo** 😺
     Para começar, me informe um **token de apenas leitura** do gitlab para que eu posa visualizar as informações de todos os seus projetos. Caso não saiba como fazer isso, [aqui esta uma pagina que fala um pouco sobre os tokens.](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)`);
 })
 
 lesgoScene.command('cancel', (ctx) => {
+    ctx.reply('lesnotgo entao 😽')
     ctx.scene.leave();
 })
 
