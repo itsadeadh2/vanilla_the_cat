@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 /* eslint-disable no-underscore-dangle */
+const moment = require('moment');
 const jwt = require('jsonwebtoken');
 const config = require('config');
 const axios = require('axios');
@@ -19,7 +20,7 @@ exports.oauthService = {
   async generateUserUrl(userId) {
     const user = await User.findById(userId);
     const token = this.generateStateHash(user);
-    const url = `${this.baseUrl}/authorize?client_id=${this.client_id}&redirect_uri=${encodeURIComponent(this.redirectUri)}&response_type=code&state=${token}&scope=api+read_repository+read_user+write_repository+read_registry+sudo`;
+    const url = `${this.baseUrl}/authorize?client_id=${this.client_id}&redirect_uri=${encodeURIComponent(this.redirectUri)}&response_type=code&state=${token}&scope=api+read_repository+read_user+write_repository+read_registry+sudo+openid`;
     return url;
   },
 
@@ -32,7 +33,7 @@ exports.oauthService = {
 
   async getUserToken(code) {
     try {
-      const url = 'https://gitlab.com/oauth/token';
+      const url = `${this.baseUrl}/token`;
       const res = await axios.post(url, null, {
         params: {
           client_id: this.client_id,
@@ -51,10 +52,29 @@ exports.oauthService = {
   async process(token, code) {
     const userId = await this.validateToken(token);
     if (!userId) return false;
-    const { access_token } = await this.getUserToken(code);
+    const { access_token, refresh_token } = await this.getUserToken(code);
     const user = await User.findById(userId);
     user.token = access_token;
+    user.refresh_token = refresh_token;
+    user.token_expires_in = moment().add(7200, 'minutes');
     await user.save();
     return user;
+  },
+
+  async refreshToken(refreshToken) {
+    try {
+      const url = `${this.baseUrl}/token`;
+      const res = await axios.post(url, null, {
+        params: {
+          client_id: this.client_id,
+          client_secret: this.client_secret,
+          grant_type: 'refresh_token',
+          refresh_token: refreshToken,
+        },
+      });
+      return res.data;
+    } catch (error) {
+      return winston.info(error);
+    }
   },
 };

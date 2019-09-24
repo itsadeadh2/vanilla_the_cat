@@ -2,8 +2,10 @@
 const winston = require('winston');
 const session = require('telegraf/session');
 const registerUser = require('../middleware/telegraf/registerUser');
+const refreshToken = require('../middleware/telegraf/refreshUserToken');
 
 module.exports = function (bot) {
+  bot.use(refreshToken);
   bot.use(registerUser);
   bot.use(session());
 
