@@ -79,7 +79,6 @@ novoProjetoScene.enter(async (ctx) => {
 
 novoProjetoScene.on('callback_query', async (ctx) => {
   const answer = JSON.parse(ctx.update.callback_query.data);
-  console.log(answer);
   const userId = ctx.update.callback_query.from.id;
   ctx.answerCbQuery('Wait...');
   if (!answer.isRepo) {
@@ -112,22 +111,13 @@ novoProjetoScene.on('callback_query', async (ctx) => {
     }
   }
   const project = await projectsService.getProjectById(userId, answer.value);
-  ctx.editMessageText(
+  return ctx.editMessageText(
     `Apenas confirmando, o projeto em questão é o ${project.name} ${project.web_url}?`,
     Markup.inlineKeyboard([
       Markup.callbackButton('Sim, é este projeto', JSON.stringify({ value: 'confirm', projectId: project.id })),
       Markup.callbackButton('Não é este projeto', JSON.stringify({ value: 'voltar ao inicio' })),
     ]).extra(),
   );
-  // if (answer === 'no') return ctx.replyWithMarkdown('Okay! Envie o Id do projeto que deseja cadastrar.');
-  // const user = await User.findById(userId);
-  // user.projects.push(projeto);
-  // setwebHook(projeto._id, user.token);
-  // await user.save();
-  // ctx.reply('Projeto cadastrado com sucesso!');
-  // return ctx.scene.leave();
-
-  
 });
 
 module.exports = novoProjetoScene;

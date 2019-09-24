@@ -26,5 +26,5 @@ exports.projectsService = {
     } catch (error) {
       return winston.error(error);
     }
-  }
+  },
 };
