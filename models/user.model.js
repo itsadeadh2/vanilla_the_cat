@@ -16,6 +16,13 @@ const userSchema = new mongoose.Schema({
   token: {
     type: String,
   },
+  token_expires_in: {
+    type: Date,
+  },
+
+  refresh_token: {
+    type: String,
+  },
 });
 
 const User = mongoose.model('User', userSchema);
