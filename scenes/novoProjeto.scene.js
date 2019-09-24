@@ -12,7 +12,7 @@ const novoProjetoScene = new Scene('novoprojeto');
 const projeto = {};
 
 const setwebHook = async function (projectId, token) {
-  const hookUrl = 'http://51.79.87.65:3000/api/gitlabIntegration';
+  const hookUrl = 'http://45.79.228.17:3000/api/gitlabIntegration';
   let alreadyRegistered = false;
 
   const res = await axios.get(`https://gitlab.com/api/v4/projects/${projectId}/hooks`, { headers: { Authorization: `Bearer ${token}` } });
@@ -65,7 +65,7 @@ novoProjetoScene.on('text', async (ctx) => {
       Markup.inlineKeyboard([Markup.callbackButton('Sim, é este projeto', 'yes'), Markup.callbackButton('Não, não é este', 'no')]).extra(),
     );
   } catch (error) {
-    winston.error(error);
+    console.log(error);
     return ctx.scene.leave();
   }
 });
