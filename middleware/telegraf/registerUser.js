@@ -12,12 +12,11 @@ module.exports = async (ctx, next) => {
   if (userFromDb) {
     winston.info('user already registered!');
   } else {
-    const { message } = ctx.update;
-    let user = {
+    const { message } = ctx.update;    
+    user = new User({
       nome: `${message.from.first_name} ${message.from.last_name}`,
       _id: message.chat.id,
-    };
-    user = new User(user);
+    });
     await user.save();
     winston.info('user saved!');
   }
