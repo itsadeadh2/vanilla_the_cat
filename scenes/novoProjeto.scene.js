@@ -16,12 +16,7 @@ const setwebHook = async function (projectId, token) {
   let alreadyRegistered = false;
 
   const res = await axios.get(`https://gitlab.com/api/v4/projects/${projectId}/hooks`, { headers: { Authorization: `Bearer ${token}` } });
-  for (let index = 0; index < res.data.length; index++) {
-    if (res.data[index] === hookUrl) {
-      alreadyRegistered = true;
-      break;
-    }
-  }
+  alreadyRegistered = res.data.some(hook => hook.url === hookUrl);
 
   if (!alreadyRegistered) {
     try {
