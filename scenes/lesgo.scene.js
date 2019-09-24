@@ -2,7 +2,7 @@
 const Scene = require('telegraf/scenes/base');
 const { Markup } = require('telegraf');
 const { User } = require('../models/user.model');
-const oauthService = require('../services/oauth.service');
+const { oauthService } = require('../services/oauth.service');
 
 
 const lesgoScene = new Scene('lesgo');
