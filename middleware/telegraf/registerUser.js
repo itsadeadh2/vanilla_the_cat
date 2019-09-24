@@ -1,8 +1,7 @@
 const winston = require('winston');
 const { User } = require('../../models/user.model');
 
-// eslint-disable-next-line func-names
-module.exports = async function (ctx, next) {
+module.exports = async (ctx, next) => {
   let userId;
   if (ctx.update.message) {
     userId = ctx.update.message.from.id;

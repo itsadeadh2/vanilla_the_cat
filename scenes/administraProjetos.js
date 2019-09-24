@@ -29,7 +29,6 @@ administraProjScene.on('callback_query', async (ctx) => {
   ctx.answerCbQuery('aguarde...');
   if (ctx.update.callback_query.data === 'delete') {
     const user = await User.findById(userId.id);
-    // eslint-disable-next-line no-underscore-dangle
     const index = user.projects.indexOf((obj) => obj._id === id);
     user.projects.splice(index, 1);
     user.save();
