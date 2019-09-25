@@ -1,13 +1,19 @@
 version: "3"
-
-services:   
+networks:
+  web:
+    external: true
+services:  
   mongo:
     container_name: mongo 
     image: mongo
-    ports:
-      - 27017:27017
     volumes:
-      - ${PWD}/datadir:/data/db
+      - ${PWD}/datadir:/data/db 
+    networks:
+      - web
+    labels:
+      - traefik.enable=false
+    expose:
+      - "27017"
   api:
     container_name: api
     build:
@@ -17,9 +23,12 @@ services:
       - "TOKEN=${TELEGRAM_BOT_TOKEN}"
       - "CLIENT_ID=${CLIENT_ID}"
       - "CLIENT_SECRET=${CLIENT_SECRET}"
-    ports:
-      - 3000:3000
     volumes:
-      - ${PWD}:/app
+      - ${PWD}:/app    
     depends_on:
       - mongo
+    networks:
+      - web
+    expose:
+      - "3000"
+    
