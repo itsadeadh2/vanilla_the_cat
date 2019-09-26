@@ -3,20 +3,37 @@
 const telegram = require('../clients/telegram.client');
 const { User } = require('../models/user.model');
 
+async function getUsersByProjectId(projectId) {
+  const users = await User.find({ 'projects._id': projectId });
+  return users;
+}
+
 exports.webhookService = {
-  async getUsersByProjectId(projectId) {
-    const users = await User.find({ 'projects._id': projectId });
-    return users;
-  },
 
   async process({ strategy, data }) {
     const strategyMap = new Map([
       ['pipeline', this.pipeline],
       ['push', this.push],
       ['merge_request', this.mergeRequest],
+      ['issue', this.issue]
     ]);
     const strategyFn = strategyMap.get(strategy);
     await strategyFn({ data });
+  },
+
+  async issue({ data }) {
+    const {
+      user,
+      project,
+      labels,
+      object_attributes,
+    } = data;
+
+    const users = await getUsersByProjectId(project.id);
+    users.forEach((usr) => {
+      const msg = `Hey! O seu projeto <b>${project.name}</b> tem uma issue no estado <i>${object_attributes.state}</i> criada pelo usuario <b>${user.name}</b>!`;
+      telegram.sendMessage(usr._id, msg, { parse_mode: 'HTML' });
+    });
   },
 
   async pipeline({ data }) {
@@ -26,10 +43,10 @@ exports.webhookService = {
       object_attributes,
       object_kind,
     } = data;
-    const users = await this.getUsersByProjectId(project.id);
+    const users = await getUsersByProjectId(project.id);
     users.forEach((user) => {
-      const msg = `Hey! O seu projeto ${project.name} está executando uma ${object_kind} do commit \`\`\`${commit.message}\`\`\` no estado: \`\`\`${object_attributes.status}\`\`\``;
-      telegram.sendMessage(user._id, msg, { parse_mode: 'Markdown' });
+      const msg = `Hey! O seu projeto <b>${project.name}</b> está executando uma <i>${object_kind}</i> do commit <b>${commit.message}</b> no estado: <i>${object_attributes.status}</i>`;
+      telegram.sendMessage(user._id, msg, { parse_mode: 'HTML' });
     });
   },
 
@@ -40,7 +57,7 @@ exports.webhookService = {
       user_name,
       checkout_sha,
     } = data;
-    const users = await this.getUsersByProjectId(project.id);
+    const users = await getUsersByProjectId(project.id);
     const commit = commits.find((cmt) => cmt.id === checkout_sha);
     users.forEach((user) => {
       const msg = `Seu projeto <b>${project.name}</b> acabou de receber um <i>push</i> do ususario <b>${user_name}!</b>  Para mais detalhes <a href="${commit.url}">clique aqui</a>)`;
