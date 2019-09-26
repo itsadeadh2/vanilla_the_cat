@@ -1,11 +1,12 @@
 const winston = require('winston');
+const config = require('config');
 const axios = require('axios');
 const { User } = require('../models/user.model');
 
 exports.projectsService = {
   client_secret: process.env.CLIENT_SECRET,
   client_id: process.env.CLIENT_ID,
-  redirectUri: 'http://www.itsadeadh2.com/api/oauth',
+  redirectUri: `${config.get('apiUrl')}/oauth`,
   baseUrl: 'https://gitlab.com/api/v4',
 
   async getProjectsByUserId(userId) {

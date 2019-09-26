@@ -1,4 +1,5 @@
 {
     "db": "mongodb://mongo/vanillaDb",
-    "jwtPrivateKey": "jwtPrivateKey"
+    "jwtPrivateKey": "jwtPrivateKey",
+    "apiUrl": "http://www.itsadeadh2.com/api"
 }

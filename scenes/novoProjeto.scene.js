@@ -2,6 +2,7 @@
 /* eslint-disable func-names */
 /* eslint-disable no-underscore-dangle */
 const winston = require('winston');
+const config = require('config');
 const Scene = require('telegraf/scenes/base');
 const { Markup } = require('telegraf');
 const axios = require('axios');
@@ -30,7 +31,7 @@ function getNextTwo(startIndex, array) {
 }
 
 const setwebHook = async function (projectId, token) {
-  const hookUrl = 'http://www.itsadeadh2.com/api/gitlabIntegration';
+  const hookUrl = `${config.get('apiUrl')}/gitlabIntegration`;
   let alreadyRegistered = false;
 
   const res = await axios.get(`https://gitlab.com/api/v4/projects/${projectId}/hooks`, { headers: { Authorization: `Bearer ${token}` } });
