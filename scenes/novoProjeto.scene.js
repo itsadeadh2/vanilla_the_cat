@@ -30,7 +30,7 @@ function getNextTwo(startIndex, array) {
 }
 
 const setwebHook = async function (projectId, token) {
-  const hookUrl = 'http://45.79.228.17:3000/api/gitlabIntegration';
+  const hookUrl = 'http://www.itsadeadh2.com/api/gitlabIntegration';
   let alreadyRegistered = false;
 
   const res = await axios.get(`https://gitlab.com/api/v4/projects/${projectId}/hooks`, { headers: { Authorization: `Bearer ${token}` } });

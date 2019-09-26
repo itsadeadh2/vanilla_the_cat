@@ -10,7 +10,7 @@ const { User } = require('../models/user.model');
 exports.oauthService = {
   client_secret: process.env.CLIENT_SECRET,
   client_id: process.env.CLIENT_ID,
-  redirectUri: 'http://45.79.228.17:3000/api/oauth',
+  redirectUri: 'http://www.itsadeadh2.com/api/oauth',
   baseUrl: 'https://gitlab.com/oauth',
 
   generateStateHash(user) {
