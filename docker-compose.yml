@@ -12,8 +12,8 @@ services:
       - web
     labels:
       - traefik.enable=false
-    expose:
-      - "27017"
+    ports:
+      - 27017:27017
   api:
     container_name: api
     build:
