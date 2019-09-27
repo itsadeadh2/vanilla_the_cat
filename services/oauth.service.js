@@ -45,7 +45,7 @@ exports.oauthService = {
       });
       return res.data;
     } catch (err) {
-      return winston.info(err);
+      return winston.error(err);
     }
   },
 
