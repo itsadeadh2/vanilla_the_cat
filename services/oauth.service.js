@@ -7,7 +7,7 @@ const axios = require('axios');
 const winston = require('winston');
 const { User } = require('../models/user.model');
 
-exports.oauthService = {
+const oauthService = {
   client_secret: process.env.CLIENT_SECRET,
   client_id: process.env.CLIENT_ID,
   redirectUri: `${config.get('apiUrl')}/oauth`,
@@ -78,3 +78,5 @@ exports.oauthService = {
     }
   },
 };
+
+module.exports = oauthService;
