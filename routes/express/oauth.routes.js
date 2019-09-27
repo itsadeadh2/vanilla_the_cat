@@ -1,8 +1,8 @@
 const express = require('express');
 
 const router = express.Router();
-const controller = require('../../controllers/oauth.controller');
+const oauthController = require('../../controllers/oauth.controller');
 
-router.get('/', controller.process);
+router.get('/', oauthController.process);
 
 module.exports = router;
