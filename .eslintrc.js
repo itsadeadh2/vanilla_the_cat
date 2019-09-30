@@ -15,6 +15,5 @@ module.exports = {
     ecmaVersion: 2018,
   },
   rules: {
-    "next-line no-underscore-dangle": off
   },
 };
