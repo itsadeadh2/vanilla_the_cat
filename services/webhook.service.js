@@ -73,4 +73,13 @@ exports.webhookService = {
       telegram.sendMessage(user._id, msg, { parse_mode: 'HTML' });
     });
   },
+
+  async note({ data }) {
+    const { project, object_attributes, user } = data;
+    const users = await getUsersByProjectId(project.id);
+    users.forEach((sub) => {
+      const msg = `Hey! O usuario <b>${user.name}</b> acabou de postar um comentário no <i>${object_attributes.noteable_type}</i> do projeto ${project.name}: <i>"${object_attributes.note}"</i> <a href="${object_attributes.url}">Ver na web</a>`;
+      telegram.sendMessage(sub._id, msg, { parse_mode: 'HTML' });
+    });
+  },
 };
