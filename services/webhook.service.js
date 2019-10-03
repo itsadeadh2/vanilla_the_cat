@@ -68,7 +68,7 @@ exports.webhookService = {
 
   async mergeRequest({ data }) {
     const { project, object_attributes } = data;
-    const users = await this.getUsersByProjectId(project.id);
+    const users = await getUsersByProjectId(project.id);
     users.forEach((user) => {
       const msg = `Hey! O projeto <b>${project.name}</b> acabou de receber um <i>merge request</i> do usuário <b>${user.name}!</b> Para mais detalhes <a href="${object_attributes.url}">clique aqui</a>`;
       telegram.sendMessage(user._id, msg, { parse_mode: 'HTML' });
