@@ -11,7 +11,24 @@ const { projectsService } = require('../services/projects.service');
 
 const novoProjetoScene = new Scene('novoprojeto');
 
-let projects = [];
+async function getAvailableProjects(userId) {
+  const user = await User.findById(userId);
+  const projectsFromDb = user.projects;
+  const projectsFromApi = await projectsService.getProjectsByUserId(userId);
+  let projects = [];
+  projectsFromDb.forEach((project) => {
+    projectsFromApi.forEach((apiProject) => {
+      if (project._id !== apiProject.id.toString()) {
+        projects.push(apiProject);
+      }
+    });
+  });
+  projects = projects.map((project) => (Markup.callbackButton(
+    project.name,
+    JSON.stringify({ value: project.id, isRepo: true }),
+  )));
+  return projects;
+}
 
 function getNextTwo(startIndex, array) {
   let values = [];
@@ -66,11 +83,7 @@ novoProjetoScene.command('cancel', (ctx) => {
 
 novoProjetoScene.enter(async (ctx) => {
   const user = await User.findById(ctx.from.id);
-  projects = await projectsService.getProjectsByUserId(user._id);
-  projects = projects.map((project) => (Markup.callbackButton(
-    project.name,
-    JSON.stringify({ value: project.id, isRepo: true }),
-  )));
+  const projects = await getAvailableProjects(user._id);
   return ctx.reply(
     'Selecione um projeto:',
     Markup.inlineKeyboard([getNextTwo(0, projects)]).extra(),
@@ -81,6 +94,7 @@ novoProjetoScene.enter(async (ctx) => {
 novoProjetoScene.on('callback_query', async (ctx) => {
   const answer = JSON.parse(ctx.update.callback_query.data);
   const userId = ctx.update.callback_query.from.id;
+  const projects = await getAvailableProjects(userId);
   ctx.answerCbQuery('Wait...');
   if (!answer.isRepo) {
     if (answer.value === 'ver mais') {
