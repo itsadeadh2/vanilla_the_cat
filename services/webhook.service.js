@@ -15,7 +15,8 @@ exports.webhookService = {
       ['pipeline', this.pipeline],
       ['push', this.push],
       ['merge_request', this.mergeRequest],
-      ['issue', this.issue]
+      ['issue', this.issue],
+      ['note', this.note],
     ]);
     const strategyFn = strategyMap.get(strategy);
     await strategyFn({ data });
