@@ -12,7 +12,7 @@ exports.projectsService = {
   async getProjectsByUserId(userId) {
     try {
       const { token } = await User.findById(userId);
-      const projects = await axios.get(`${this.baseUrl}/projects`, { headers: { Authorization: `Bearer ${token}` }, params: { membership: true, simple: true } });
+      const projects = await axios.get(`${this.baseUrl}/projects`, { headers: { Authorization: `Bearer ${token}` }, params: { min_access_level: 40, simple: true } });
       return projects.data;
     } catch (error) {
       return winston.error(error);
