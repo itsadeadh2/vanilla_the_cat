@@ -7,10 +7,10 @@ const axios = require('axios');
 const winston = require('winston');
 const { User } = require('../models/user.model');
 
-exports.oauthService = {
+const oauthService = {
   client_secret: process.env.CLIENT_SECRET,
   client_id: process.env.CLIENT_ID,
-  redirectUri: 'http://45.79.228.17:3000/api/oauth',
+  redirectUri: `${config.get('apiUrl')}/oauth`,
   baseUrl: 'https://gitlab.com/oauth',
 
   generateStateHash(user) {
@@ -78,3 +78,5 @@ exports.oauthService = {
     }
   },
 };
+
+module.exports = oauthService;

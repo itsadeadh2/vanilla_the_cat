@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const { Markup } = require('telegraf');
 const Scene = require('telegraf/scenes/base');
 const { User } = require('../models/user.model');
@@ -14,7 +15,6 @@ administraProjScene.enter(async (ctx) => {
   const user = await User.findById(userId);
   const projects = [];
   user.projects.forEach((project) => {
-    // eslint-disable-next-line no-underscore-dangle
     projects.push(Markup.callbackButton(project.nome, project._id));
   });
   ctx.reply(

@@ -2,6 +2,7 @@
 /* eslint-disable func-names */
 /* eslint-disable no-underscore-dangle */
 const winston = require('winston');
+const config = require('config');
 const Scene = require('telegraf/scenes/base');
 const { Markup } = require('telegraf');
 const axios = require('axios');
@@ -10,7 +11,24 @@ const { projectsService } = require('../services/projects.service');
 
 const novoProjetoScene = new Scene('novoprojeto');
 
-let projects = [];
+async function getAvailableProjects(userId) {
+  const user = await User.findById(userId);
+  const projectsFromDb = user.projects;
+  const projectsFromApi = await projectsService.getProjectsByUserId(userId);
+  let projects = [];
+  projectsFromDb.forEach((project) => {
+    projectsFromApi.forEach((apiProject) => {
+      if (project._id !== apiProject.id.toString()) {
+        projects.push(apiProject);
+      }
+    });
+  });
+  projects = projects.map((project) => (Markup.callbackButton(
+    project.name,
+    JSON.stringify({ value: project.id, isRepo: true }),
+  )));
+  return projects;
+}
 
 function getNextTwo(startIndex, array) {
   let values = [];
@@ -30,7 +48,7 @@ function getNextTwo(startIndex, array) {
 }
 
 const setwebHook = async function (projectId, token) {
-  const hookUrl = 'http://45.79.228.17:3000/api/gitlabIntegration';
+  const hookUrl = `${config.get('apiUrl')}/gitlabIntegration`;
   let alreadyRegistered = false;
 
   const res = await axios.get(`https://gitlab.com/api/v4/projects/${projectId}/hooks`, { headers: { Authorization: `Bearer ${token}` } });
@@ -65,11 +83,7 @@ novoProjetoScene.command('cancel', (ctx) => {
 
 novoProjetoScene.enter(async (ctx) => {
   const user = await User.findById(ctx.from.id);
-  projects = await projectsService.getProjectsByUserId(user._id);
-  projects = projects.map((project) => (Markup.callbackButton(
-    project.name,
-    JSON.stringify({ value: project.id, isRepo: true }),
-  )));
+  const projects = await getAvailableProjects(user._id);
   return ctx.reply(
     'Selecione um projeto:',
     Markup.inlineKeyboard([getNextTwo(0, projects)]).extra(),
@@ -80,6 +94,7 @@ novoProjetoScene.enter(async (ctx) => {
 novoProjetoScene.on('callback_query', async (ctx) => {
   const answer = JSON.parse(ctx.update.callback_query.data);
   const userId = ctx.update.callback_query.from.id;
+  const projects = await getAvailableProjects(userId);
   ctx.answerCbQuery('Wait...');
   if (!answer.isRepo) {
     if (answer.value === 'ver mais') {

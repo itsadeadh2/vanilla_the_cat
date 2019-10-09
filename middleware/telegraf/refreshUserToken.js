@@ -4,9 +4,9 @@
 const moment = require('moment');
 const winston = require('winston');
 const { User } = require('../../models/user.model');
-const { oauthService } = require('../../services/oauth.service');
+const oauthService = require('../../services/oauth.service');
 
-module.exports = async function (ctx, next) {
+module.exports = async (ctx, next) => {
   const user = await User.findById(ctx.from.id);
   if (!user || !user.refresh_token) return next();
   const diff = moment().diff(user.token_expires_in, 'seconds');

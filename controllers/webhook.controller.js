@@ -1,5 +1,5 @@
 const winston = require('winston');
-const webhookService = require('../services/webhook.service');
+const { webhookService } = require('../services/webhook.service');
 
 const webhookController = {
   async notify(req, res) {
